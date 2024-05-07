@@ -1,0 +1,232 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.adivinaquien;
+import java.util.ArrayList;
+import java.util.Random;
+
+class Personaje {
+    private String nombre;
+    private String genero;
+    private String colorCabello;
+    private int edad;
+    private String nacionalidad;
+
+    public Personaje(String nombre, String genero, String colorCabello, int edad, String nacionalidad) {
+        this.nombre = nombre;
+        this.genero = genero;
+        this.colorCabello = colorCabello;
+        this.edad = edad;
+        this.nacionalidad = nacionalidad;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public String getColorCabello() {
+        return colorCabello;
+    }
+
+    public int getEdad() {
+        return edad;
+    }
+
+    public String getNacionalidad() {
+        return nacionalidad;
+    }
+}
+
+public class AdivinaQuien {
+    private static ArrayList<Personaje> personajes = new ArrayList<>();
+    private static Random random = new Random();
+
+    public static void main(String[] args) {
+        System.out.println("Bienvenido al juego Adivina Quién!");
+
+        inicializarPersonajes();
+        Personaje personajeMisterioso = seleccionarPersonajeAlAzar();
+
+        System.out.println("Hazme preguntas para adivinar el personaje misterioso.");
+
+        // Proponer nacionalidad y edad al usuario
+        String propuestaNacionalidad = obtenerNacionalidadAleatoria();
+        int propuestaEdad = obtenerEdadAleatoria();
+
+        System.out.println("¿El personaje es de nacionalidad " + propuestaNacionalidad + " y tiene " + propuestaEdad + " años?");
+
+        // Verificar si la propuesta es correcta
+        if (personajeMisterioso.getNacionalidad().equalsIgnoreCase(propuestaNacionalidad) &&
+                personajeMisterioso.getEdad() == propuestaEdad) {
+            System.out.println("¡Has adivinado el personaje misterioso! Es " + personajeMisterioso.getNombre());
+        } else {
+            System.out.println("Esa no es la respuesta correcta. Sigue intentando.");
+        }
+    }
+
+    private static void inicializarPersonajes() {
+        // Agregar personajes
+        personajes.add(new Personaje("Albert Einstein", "hombre", "blanco", 76, "alemán"));
+        personajes.add(new Personaje("Marilyn Monroe", "mujer", "rubio", 36, "estadounidense"));
+        personajes.add(new Personaje("Michael Jackson", "hombre", "negro", 50, "estadounidense"));
+        personajes.add(new Personaje("Lady Gaga", "mujer", "rubio", 35, "estadounidense"));
+        personajes.add(new Personaje("Luke Skywalker", "hombre", "rubio", 23, "estadounidense"));
+        personajes.add(new Personaje("Katniss Everdeen", "mujer", "negro", 21, "estadounidense"));
+        personajes.add(new Personaje("Harry Potter", "hombre", "negro", 22, "británico"));
+        personajes.add(new Personaje("Hermione Granger", "mujer", "castaño", 23, "británica"));
+        // Agregar más personajes según sea necesario
+    }
+
+    private static Personaje seleccionarPersonajeAlAzar() {
+        return personajes.get(random.nextInt(personajes.size()));
+    }
+
+    private static String obtenerNacionalidadAleatoria() {
+        String[] nacionalidades = {"alemán", "estadounidense", "británico", "francés", "italiano", "español"};
+        return nacionalidades[random.nextInt(nacionalidades.length)];
+    }
+
+    private static int obtenerEdadAleatoria() {
+        return random.nextInt(91) + 10; // Edades entre 10 y 100 años
+    }
+}
+
+-----------------------------------------------------------------------------------------------------------------------------
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.proyectoprueba;
+
+/**
+ *
+ * @author Juan Pablo
+ */
+
+import java.util.Scanner;
+
+public class ProyectoPrueba{
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+           
+        System.out.println("Piensa en un personaje famoso (por ejemplo, un personaje histórico, actor, deportista, etc.)");
+        System.out.println("Responde Si (s) o No (n) a las siguientes preguntas:");
+        
+        String personaje = "";
+        
+        // Preguntas sobre el género del personaje
+        System.out.println("¿Tu personaje es un hombre? (s/n)");
+        char genero = scanner.nextLine().toLowerCase().charAt(0);
+        
+        if (genero == 's') {
+            // Si el personaje es un hombre
+            System.out.println("¿Tu personaje es un actor? (s/n)");
+            char actor = scanner.nextLine().toLowerCase().charAt(0);
+            
+            if (actor == 's') {
+                // Si el personaje es un actor
+                System.out.println("¿Tu personaje es conocido por su papel en películas de acción? (s/n)");
+                char accion = scanner.nextLine().toLowerCase().charAt(0);
+                
+                if (accion == 's') {
+                    // Si el personaje es conocido por películas de acción
+                    System.out.println("¿Tu personaje ha interpretado a un superhéroe? (s/n)");
+                    char heroe = scanner.nextLine().toLowerCase().charAt(0);
+                    
+                    if (heroe == 's') {
+                        personaje = "Arnold Schwarzenegger como Terminator - Actor, conocido por su papel en películas de acción y como superhéroe.";
+                    } else {
+                        personaje = "Arnold Schwarzenegger como Conan el Bárbaro - Actor, conocido por su papel en películas de acción.";
+                    }
+                } else {
+                    // Si el personaje no es conocido por películas de acción
+                    personaje = "Jim Carrey - Actor, conocido por sus papeles en películas de comedia.";
+                }
+            } else {
+                // Si el personaje no es un actor
+                System.out.println("¿Tu personaje es un científico famoso? (s/n)");
+                char cientifico = scanner.nextLine().toLowerCase().charAt(0);
+                
+                if (cientifico == 's') {
+                    // Si el personaje es un científico
+                    System.out.println("¿Tu personaje es conocido por sus contribuciones a la física teórica? (s/n)");
+                    char fisicaTeorica = scanner.nextLine().toLowerCase().charAt(0);
+                    
+                    if (fisicaTeorica == 's') {
+                        personaje = "Stephen Hawking - Científico famoso, conocido por sus contribuciones a la física teórica.";
+                    } else {
+                        personaje = "Albert Einstein - Científico famoso, conocido por su teoría de la relatividad.";
+                    }
+                } else {
+                    // Si el personaje no es un científico
+                    System.out.println("Opción errónea.");
+                }
+            }
+        } else if (genero == 'n') {
+            // Si el personaje no es un hombre
+            System.out.println("¿Tu personaje es una actriz? (s/n)");
+            char actriz = scanner.nextLine().toLowerCase().charAt(0);
+            
+            if (actriz == 's') {
+                // Si el personaje es una actriz
+                System.out.println("¿Tu personaje ha ganado un premio Oscar? (s/n)");
+                char oscar = scanner.nextLine().toLowerCase().charAt(0);
+                
+                if (oscar == 's') {
+                    personaje = "Angelina Jolie - Actriz, ganadora de un premio Oscar.";
+                } else {
+                    personaje = "Meryl Streep - Actriz, ganadora de múltiples premios Oscar.";
+                }
+            } else {
+                // Si el personaje no es una actriz
+                System.out.println("¿Tu personaje es una cantante famosa? (s/n)");
+                char cantante = scanner.nextLine().toLowerCase().charAt(0);
+                
+                if (cantante == 's') {
+                    System.out.println("¿Tu personaje es conocida por su voz poderosa? (s/n)");
+                    char vozPoderosa = scanner.nextLine().toLowerCase().charAt(0);
+                    
+                    if (vozPoderosa == 's') {
+                        personaje = "Adele, conocida por su voz poderosa - Cantante famosa.";
+                    } else {
+                        personaje = "billie eilish - Cantante famosa, con voz tenue.";
+                    }
+                } else {
+                    
+                    // Si la respuesta no es sí ni no
+                    System.out.println("Opción errónea.");
+                }
+            }
+        } else {
+            // Si la respuesta no es sí ni no
+            System.out.println("Opción errónea.");
+        }
+        
+        // Mostrar el personaje adivinado
+        System.out.println("El personaje que has pensado es: " + personaje);
+        
+        scanner.close();
+
+    
+        
+        // Mostrar todos los personajes y sus características
+        System.out.println("\nAquí tienes una lista de algunos personajes y sus características:");
+        System.out.println("1. Arnold Schwarzenegger como Terminator - Actor, conocido por su papel en películas de acción y como superhéroe.");
+        System.out.println("2. Arnold Schwarzenegger como Conan el Bárbaro - Actor, conocido por su papel en películas de acción.");
+        System.out.println("3. Jim Carrey - Actor, conocido por sus papeles en películas de comedia.");
+        System.out.println("4. Albert Einstein - Científico famoso, conocido por su teoría de la relatividad.");
+        System.out.println("5. Stephen Hawking - Científico famoso, conocido por sus contribuciones a la física teórica.");
+        System.out.println("6. Angelina Jolie - Actriz, ganadora de un premio Oscar.");
+        System.out.println("7. Meryl Streep - Actriz, ganadora de múltiples premios Oscar.");
+        System.out.println("8. Adele, conocida por su voz poderosa - Cantante famosa.");
+        System.out.println("9. billie eilish, conocida por su voz suave - Cantante famosa.");
+        
+        scanner.close();
+            }
+        }
+    
