@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cluedo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="top-image">
+        <img src="https://i.pinimg.com/originals/6d/c1/56/6dc156d8223805c012aa0b82813ca5c5.jpg" alt="Tablerp">
+    </div>
+     <!-- Contenedor del dado -->
+     <div class="dice" onclick="rollDice()">
+        <div class="face" id="dice-face">1</div>
+    </div>
+    <div id="game-board"></div>
+    <div id="message"></div>
+
+    <div id="game-board"></div>
+
+    <div id="accusation-form">
+        <h2>Haz tu acusación</h2>
+        <label for="accusation-room">Lugar:</label>
+        <select id="accusation-room">
+            <option value="Sala de estar">Sala de estar</option>
+            <option value="Comedor">Comedor</option>
+            <option value="Cocina">Cocina</option>
+            <option value="Pasillo">Pasillo</option>
+            <option value="Estudio">Estudio</option>
+            <option value="Biblioteca">Biblioteca</option>
+        </select>
+
+        <label for="accusation-character">Personaje:</label>
+        <select id="accusation-character">
+            <option value="Dr. Cacao">Dr. Cacao</option>
+            <option value="Srta. Mostaza">Srta. Mostaza</option>
+            <option value="Prof. Lechuga">Prof. Lechuga</option>
+            <option value="Col. Mostaza">Col. Mostaza</option>
+            <option value="Sra. Pavo">Sra. Pavo</option>
+        </select>
+
+        <label for="accusation-weapon">Arma:</label>
+        <select id="accusation-weapon">
+            <option value="Candelabro">Candelabro</option>
+            <option value="Cuchillo">Cuchillo</option>
+            <option value="Cuerda">Cuerda</option>
+            <option value="Llave inglesa">Llave inglesa</option>
+            <option value="Revólver">Revólver</option>
+            <option value="Tubo">Tubo</option>
+        </select>
+        <div id="game-board"></div>
+        <div id="message"></div>
+        <button onclick="submitAccusation()">Hacer acusación</button>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+----------------------------------------------------------CSS-------------------------------------------------------
+body {
+    background-color: #5691d0;
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 100vh; /* Ocupa toda la altura de la ventana del navegador */
+}
+
+#game-board {
+    margin-bottom: 20px;
+    position: absolute;
+    top: 100px; /* Ajusta el valor según sea necesario */
+    left: 50%; /* Otra opción para centrar horizontalmente */
+    transform: translateX(-50%);
+}
+
+#accusation-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+select, button {
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+/* Estilos para la imagen en la parte superior */
+.top-image {
+    text-align: left;
+}
+
+/* Estilos opcionales para la imagen */
+.top-image img {
+    max-width: 80%;
+    max-height: 80vh; /* Ajusta la altura máxima según tus necesidades */
+}
+/* Estilos para el contenedor del dado */
+.dice {
+    width: 100px;
+    height: 100px;
+    background-color: #e34060;
+    border: 1px solid #000;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    position: relative; /* Hace que el dado se posicione de manera relativa */
+    left: -50px; /* Ajusta la posición horizontal según tus necesidades */
+}
+
+/* Estilos para la cara del dado */
+.face {
+    font-size: 48px;
+    line-height: 100px;
+    margin-left: auto;
+    background-color: #eb6060;
+}
+
+/* Animación para girar el dado */
+@keyframes roll {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+}
+-------------------------------------------------------------JS---------------------------------------------------------
+// Objeto principal del juego
+const Game = {
+    // Propiedades del tablero
+    board: [
+        ['Sala de estar', 'Comedor', 'Cocina'],
+        ['Pasillo', 'Pasillo', 'Pasillo'],
+        ['Estudio', 'Biblioteca', 'Sala de estar']
+    ],
+
+    // Lista de personajes
+    characters: [
+        { name: 'Dr. Cacao', position: { x: 0, y: 0 } },
+        { name: 'Srta. Mostaza', position: { x: 1, y: 0 } },
+        { name: 'Prof. Lechuga', position: { x: 2, y: 0 } },
+        { name: 'Col. Mostaza', position: { x: 0, y: 1 } },
+        { name: 'Sra. Pavo', position: { x: 1, y: 1 } }
+    ],
+
+    // Lista de armas
+    weapons: ['Candelabro', 'Cuchillo', 'Cuerda', 'Llave inglesa', 'Revólver', 'Tubo'],
+
+    // Solución del juego (habitación, personaje, arma)
+    solution: {
+        room: 'Comedor',
+        character: 'Srta. Mostaza',
+        weapon: 'Cuchillo'
+    },
+
+    // Función para inicializar el juego
+    init() {
+        console.log("Bienvenido al juego Cluedo!");
+        this.displayBoard();
+    },
+
+    // Función para mostrar el tablero en el navegador
+    displayBoard() {
+        const gameBoard = document.getElementById('game-board');
+        let html = '<h2>Tablero del juego:</h2>';
+
+        for (let y = 0; y < this.board.length; y++) {
+            html += '<div class="row">';
+            for (let x = 0; x < this.board[y].length; x++) {
+                let room = this.board[y][x];
+                let character = this.getCharacterAtPosition(x, y);
+                if (character) {
+                    room = character; // Sobrescribir el nombre de la habitación con el nombre del personaje
+                }
+                html += `<div class="room">${room}</div>`;
+            }
+            html += '</div>';
+        }
+
+        // Mostrar las armas en el tablero
+        html += '<h2>Armas:</h2>';
+        for (let weapon of this.weapons) {
+            html += `<div class="weapon">${weapon}</div>`;
+        }
+
+        gameBoard.innerHTML = html;
+    },
+
+    // Función para obtener el personaje en una posición específica
+    getCharacterAtPosition(x, y) {
+        for (let character of this.characters) {
+            if (character.position.x === x && character.position.y === y) {
+                return character.name;
+            }
+        }
+        return null;
+    },
+
+    // Función para mover un personaje a una nueva posición
+    moveCharacter(characterIndex, newX, newY) {
+        console.log(`Moviendo ${this.characters[characterIndex].name} a la posición (${newX}, ${newY})`);
+        this.characters[characterIndex].position.x = newX;
+        this.characters[characterIndex].position.y = newY;
+        this.displayBoard();
+    },
+
+   // Función para que un jugador haga una acusación
+makeAccusation(room, character, weapon) {
+    // Verificar si la acusación es correcta
+    if (room === this.solution.room && character === this.solution.character && weapon === this.solution.weapon) {
+        console.log('¡Felicidades! Has hecho la acusación correcta y has ganado el juego.');
+    } else {
+        // Verificar si alguna parte de la acusación es correcta
+        let correctOptions = [];
+        if (room === this.solution.room) correctOptions.push('habitación');
+        if (character === this.solution.character) correctOptions.push('personaje');
+        if (weapon === this.solution.weapon) correctOptions.push('arma');
+
+        // Mostrar mensaje
+        if (correctOptions.length > 0) {
+            console.log(`¡Acertaste en ${correctOptions.join(' y ')}! Pero tu acusación no es completamente correcta.`);
+        } else {
+            console.log('Lo siento, tu acusación es incorrecta. El juego continúa...');
+        }
+    }
+}
+};
+
+
+// Función para procesar la acusación del jugador
+function submitAccusation() {
+    console.log("Botón de acusar presionado");
+    const selectedRoom = document.getElementById('accusation-room').value;
+    const selectedCharacter = document.getElementById('accusation-character').value;
+    const selectedWeapon = document.getElementById('accusation-weapon').value;
+    Game.makeAccusation(selectedRoom, selectedCharacter, selectedWeapon);
+}
+// Inicializar el juego al cargar la página
+window.onload = function() {
+    Game.init();
+};
+
+// Función para lanzar el dado
+function rollDice() {
+    const diceFace = document.getElementById('dice-face');
+    const randomNum = Math.floor(Math.random() * 6) + 1; // Genera un número aleatorio del 1 al 6
+    diceFace.textContent = randomNum; // Actualiza la cara del dado con el número aleatorio
+    diceFace.style.animation = 'roll 1s ease-out'; // Aplica la animación de giro al dado
+    setTimeout(() => {
+        diceFace.style.animation = ''; // Elimina la animación después de 1 segundo
+    }, 1000);
+}
