@@ -10,14 +10,14 @@
     <div class="top-image">
         <img src="https://i.pinimg.com/originals/6d/c1/56/6dc156d8223805c012aa0b82813ca5c5.jpg" alt="Tablerp">
     </div>
-     <!-- Contenedor del dado -->
-     <div class="dice" onclick="rollDice()">
+
+    <!-- Contenedor del dado -->
+    <div class="dice" onclick="rollDice()">
         <div class="face" id="dice-face">1</div>
     </div>
+    
     <div id="game-board"></div>
     <div id="message"></div>
-
-    <div id="game-board"></div>
 
     <div id="accusation-form">
         <h2>Haz tu acusación</h2>
@@ -49,35 +49,40 @@
             <option value="Revólver">Revólver</option>
             <option value="Tubo">Tubo</option>
         </select>
-        <div id="game-board"></div>
-        <div id="message"></div>
-        <button onclick="submitAccusation()">Hacer acusación</button>
 
+        <button onclick="submitAccusation()">Hacer acusación</button>
     </div>
+
+    <div id="story"></div>
+
+    <!-- Botón para reiniciar el juego -->
+    <button id="new-game-button" onclick="startNewGame()">Nuevo Juego</button>
 
     <script src="script.js"></script>
 </body>
 </html>
+
 ----------------------------------------------------------CSS-------------------------------------------------------
 body {
-    background-color: #5691d0;
+    background-color: #e4e497;
     display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
+    flex-direction: column;
+    align-items: center; /* Centra horizontalmente */
     height: 100vh; /* Ocupa toda la altura de la ventana del navegador */
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 #game-board {
     margin-bottom: 20px;
-    position: absolute;
-    top: 100px; /* Ajusta el valor según sea necesario */
-    left: 50%; /* Otra opción para centrar horizontalmente */
-    transform: translateX(-50%);
+    position: relative;
+    top: 20px; /* Ajusta el valor según sea necesario */
 }
 
 #accusation-form {
     max-width: 400px;
-    margin: 0 auto;
+    margin: 20px;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -104,6 +109,7 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
 /* Estilos para la imagen en la parte superior */
 .top-image {
     text-align: left;
@@ -114,11 +120,12 @@ button:hover {
     max-width: 80%;
     max-height: 80vh; /* Ajusta la altura máxima según tus necesidades */
 }
+
 /* Estilos para el contenedor del dado */
 .dice {
     width: 100px;
     height: 100px;
-    background-color: #e34060;
+    background-color: #efe396;
     border: 1px solid #000;
     border-radius: 10px;
     text-align: center;
@@ -131,14 +138,28 @@ button:hover {
 .face {
     font-size: 48px;
     line-height: 100px;
-    margin-left: auto;
-    background-color: #eb6060;
+    background-color: #e99b68;
 }
 
 /* Animación para girar el dado */
 @keyframes roll {
     0% { transform: rotateY(0deg); }
     100% { transform: rotateY(360deg); }
+}
+
+/* Estilos para el botón de nuevo juego */
+#new-game-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#new-game-button:hover {
+    background-color: #218838;
 }
 -------------------------------------------------------------JS---------------------------------------------------------
 // Objeto principal del juego
@@ -163,16 +184,31 @@ const Game = {
     weapons: ['Candelabro', 'Cuchillo', 'Cuerda', 'Llave inglesa', 'Revólver', 'Tubo'],
 
     // Solución del juego (habitación, personaje, arma)
-    solution: {
-        room: 'Comedor',
-        character: 'Srta. Mostaza',
-        weapon: 'Cuchillo'
+    solution: {},
+
+    // Historias para cada personaje
+    stories: {
+        'Dr. Cacao': 'El Dr. Cacao es un famoso científico conocido por sus extrañas investigaciones en el campo de la botánica. Una noche, fue visto cerca del invernadero con una misteriosa caja que emitía una luz verde. ¿Qué podría estar escondiendo?',
+        'Srta. Mostaza': 'La Srta. Mostaza, una socialité conocida por sus elegantes fiestas, organizó una cena la noche del crimen. Los invitados notaron que estaba muy nerviosa y que desapareció por un largo rato durante la velada. ¿Qué podría haber estado haciendo?',
+        'Prof. Lechuga': 'El Prof. Lechuga, un académico renombrado, había estado trabajando en un experimento revolucionario. Se le vio en el laboratorio esa noche con un extraño maletín que nunca antes había llevado. ¿Qué contenía?',
+        'Col. Mostaza': 'El Col. Mostaza, un ex-militar condecorado, había recibido una misteriosa carta esa misma mañana. Los sirvientes notaron que estaba más pensativo y distante de lo habitual. ¿Qué decía esa carta?',
+        'Sra. Pavo': 'La Sra. Pavo, una famosa escritora de novelas de misterio, estaba investigando para su nuevo libro. Se la vio en la biblioteca con una serie de documentos antiguos. ¿Qué estaba investigando?'
     },
 
     // Función para inicializar el juego
     init() {
         console.log("Bienvenido al juego Cluedo!");
+        this.setSolution();
+        this.displayStory();
         this.displayBoard();
+    },
+
+    // Función para establecer la solución del juego aleatoriamente
+    setSolution() {
+        const randomRoom = this.board[Math.floor(Math.random() * this.board.length)][Math.floor(Math.random() * 3)];
+        const randomCharacter = this.characters[Math.floor(Math.random() * this.characters.length)].name;
+        const randomWeapon = this.weapons[Math.floor(Math.random() * this.weapons.length)];
+        this.solution = { room: randomRoom, character: randomCharacter, weapon: randomWeapon };
     },
 
     // Función para mostrar el tablero en el navegador
@@ -212,36 +248,35 @@ const Game = {
         return null;
     },
 
-    // Función para mover un personaje a una nueva posición
-    moveCharacter(characterIndex, newX, newY) {
-        console.log(`Moviendo ${this.characters[characterIndex].name} a la posición (${newX}, ${newY})`);
-        this.characters[characterIndex].position.x = newX;
-        this.characters[characterIndex].position.y = newY;
-        this.displayBoard();
+    // Función para mostrar la historia del personaje
+    displayStory() {
+        const storyElement = document.getElementById('story');
+        const randomCharacter = this.characters[Math.floor(Math.random() * this.characters.length)].name;
+        storyElement.innerHTML = `<h3>Historia del personaje:</h3><p>${this.stories[randomCharacter]}</p>`;
     },
 
-   // Función para que un jugador haga una acusación
-makeAccusation(room, character, weapon) {
-    // Verificar si la acusación es correcta
-    if (room === this.solution.room && character === this.solution.character && weapon === this.solution.weapon) {
-        console.log('¡Felicidades! Has hecho la acusación correcta y has ganado el juego.');
-    } else {
-        // Verificar si alguna parte de la acusación es correcta
-        let correctOptions = [];
-        if (room === this.solution.room) correctOptions.push('habitación');
-        if (character === this.solution.character) correctOptions.push('personaje');
-        if (weapon === this.solution.weapon) correctOptions.push('arma');
-
-        // Mostrar mensaje
-        if (correctOptions.length > 0) {
-            console.log(`¡Acertaste en ${correctOptions.join(' y ')}! Pero tu acusación no es completamente correcta.`);
+    // Función para que un jugador haga una acusación
+    makeAccusation(room, character, weapon) {
+        const message = document.getElementById('message');
+        // Verificar si la acusación es correcta
+        if (room === this.solution.room && character === this.solution.character && weapon === this.solution.weapon) {
+            message.innerHTML = '¡Felicidades! Has hecho la acusación correcta y has ganado el juego.';
         } else {
-            console.log('Lo siento, tu acusación es incorrecta. El juego continúa...');
+            // Verificar si alguna parte de la acusación es correcta
+            let correctOptions = [];
+            if (room === this.solution.room) correctOptions.push('habitación');
+            if (character === this.solution.character) correctOptions.push('personaje');
+            if (weapon === this.solution.weapon) correctOptions.push('arma');
+
+            // Mostrar mensaje
+            if (correctOptions.length > 0) {
+                message.innerHTML = `¡Acertaste en ${correctOptions.join(' y ')}! Pero tu acusación no es completamente correcta.`;
+            } else {
+                message.innerHTML = 'Lo siento, tu acusación es incorrecta. El juego continúa...';
+            }
         }
     }
-}
 };
-
 
 // Función para procesar la acusación del jugador
 function submitAccusation() {
@@ -251,6 +286,15 @@ function submitAccusation() {
     const selectedWeapon = document.getElementById('accusation-weapon').value;
     Game.makeAccusation(selectedRoom, selectedCharacter, selectedWeapon);
 }
+
+// Función para iniciar un nuevo juego
+function startNewGame() {
+    console.log("Botón de nuevo juego presionado");
+    Game.init();
+    // Limpiar el mensaje anterior
+    document.getElementById('message').innerHTML = '';
+}
+
 // Inicializar el juego al cargar la página
 window.onload = function() {
     Game.init();
