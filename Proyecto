@@ -35,12 +35,23 @@ public class AdivinaQuien {
         });
 
         // Pedir al usuario que seleccione un tema
-        System.out.println("Selecciona un tema:");
-        System.out.println("1. Animales");
-        System.out.println("2. Actores");
-        System.out.print("Elige el numero del tema: ");
-        int opcionTema = scanner.nextInt();
-        scanner.nextLine(); // Consumir el salto de línea
+        int opcionTema = 0;
+        while (opcionTema != 1 && opcionTema != 2) {
+            System.out.println("Selecciona un tema:");
+            System.out.println("1. Animales");
+            System.out.println("2. Actores");
+            System.out.print("Elige el numero del tema: ");
+            if (scanner.hasNextInt()) {
+                opcionTema = scanner.nextInt();
+                scanner.nextLine(); // Consumir el salto de línea
+                if (opcionTema != 1 && opcionTema != 2) {
+                    System.out.println("Opcion invalida. Por favor, elige 1 o 2.");
+                }
+            } else {
+                System.out.println("Entrada invalida. Por favor, elige 1 o 2.");
+                scanner.next(); // Limpiar entrada inválida
+            }
+        }
 
         String[][] personajes = null;
         String temaElegido = null;
@@ -52,9 +63,6 @@ public class AdivinaQuien {
         } else if (opcionTema == 2) {
             personajes = temas.get("actores");
             temaElegido = "actores";
-        } else {
-            System.out.println("Opcion invalida. Saliendo del programa.");
-            return;
         }
 
         // Elegir un personaje aleatorio del tema seleccionado
@@ -75,7 +83,8 @@ public class AdivinaQuien {
                 String respuesta = scanner.nextLine().toLowerCase();
                 if (!respuesta.equals("s") && !respuesta.equals("n")) {
                     System.out.println("Respuesta invalida. Debes ingresar 's' o 'n'.");
-                    return;
+                    i--; // Volver a preguntar la misma pregunta
+                    continue;
                 }
                 if ((respuesta.equals("s") && !pregunta.contains("No ")) ||
                     (respuesta.equals("n") && pregunta.contains("No "))) {
